@@ -1,0 +1,343 @@
+#include "oled.h"
+char oled_str[50] = {0};
+const uint8_t F6x8[][6] =
+    {
+        {0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // sp
+        {0x00, 0x00, 0x00, 0x2f, 0x00, 0x00}, // !
+        {0x00, 0x00, 0x07, 0x00, 0x07, 0x00}, // "
+        {0x00, 0x14, 0x7f, 0x14, 0x7f, 0x14}, // #
+        {0x00, 0x24, 0x2a, 0x7f, 0x2a, 0x12}, // $
+        {0x00, 0x62, 0x64, 0x08, 0x13, 0x23}, // %
+        {0x00, 0x36, 0x49, 0x55, 0x22, 0x50}, // &
+        {0x00, 0x00, 0x05, 0x03, 0x00, 0x00}, // '
+        {0x00, 0x00, 0x1c, 0x22, 0x41, 0x00}, // (
+        {0x00, 0x00, 0x41, 0x22, 0x1c, 0x00}, // )
+        {0x00, 0x14, 0x08, 0x3E, 0x08, 0x14}, // *
+        {0x00, 0x08, 0x08, 0x3E, 0x08, 0x08}, // +
+        {0x00, 0x00, 0x00, 0xA0, 0x60, 0x00}, // ,
+        {0x00, 0x08, 0x08, 0x08, 0x08, 0x08}, // -
+        {0x00, 0x00, 0x60, 0x60, 0x00, 0x00}, // .
+        {0x00, 0x20, 0x10, 0x08, 0x04, 0x02}, // /
+        {0x00, 0x3E, 0x51, 0x49, 0x45, 0x3E}, // 0
+        {0x00, 0x00, 0x42, 0x7F, 0x40, 0x00}, // 1
+        {0x00, 0x42, 0x61, 0x51, 0x49, 0x46}, // 2
+        {0x00, 0x21, 0x41, 0x45, 0x4B, 0x31}, // 3
+        {0x00, 0x18, 0x14, 0x12, 0x7F, 0x10}, // 4
+        {0x00, 0x27, 0x45, 0x45, 0x45, 0x39}, // 5
+        {0x00, 0x3C, 0x4A, 0x49, 0x49, 0x30}, // 6
+        {0x00, 0x01, 0x71, 0x09, 0x05, 0x03}, // 7
+        {0x00, 0x36, 0x49, 0x49, 0x49, 0x36}, // 8
+        {0x00, 0x06, 0x49, 0x49, 0x29, 0x1E}, // 9
+        {0x00, 0x00, 0x36, 0x36, 0x00, 0x00}, // :
+        {0x00, 0x00, 0x56, 0x36, 0x00, 0x00}, // ;
+        {0x00, 0x08, 0x14, 0x22, 0x41, 0x00}, // <
+        {0x00, 0x14, 0x14, 0x14, 0x14, 0x14}, // =
+        {0x00, 0x00, 0x41, 0x22, 0x14, 0x08}, // >
+        {0x00, 0x02, 0x01, 0x51, 0x09, 0x06}, // ?
+        {0x00, 0x32, 0x49, 0x59, 0x51, 0x3E}, // @
+        {0x00, 0x7C, 0x12, 0x11, 0x12, 0x7C}, // A
+        {0x00, 0x7F, 0x49, 0x49, 0x49, 0x36}, // B
+        {0x00, 0x3E, 0x41, 0x41, 0x41, 0x22}, // C
+        {0x00, 0x7F, 0x41, 0x41, 0x22, 0x1C}, // D
+        {0x00, 0x7F, 0x49, 0x49, 0x49, 0x41}, // E
+        {0x00, 0x7F, 0x09, 0x09, 0x09, 0x01}, // F
+        {0x00, 0x3E, 0x41, 0x49, 0x49, 0x7A}, // G
+        {0x00, 0x7F, 0x08, 0x08, 0x08, 0x7F}, // H
+        {0x00, 0x00, 0x41, 0x7F, 0x41, 0x00}, // I
+        {0x00, 0x20, 0x40, 0x41, 0x3F, 0x01}, // J
+        {0x00, 0x7F, 0x08, 0x14, 0x22, 0x41}, // K
+        {0x00, 0x7F, 0x40, 0x40, 0x40, 0x40}, // L
+        {0x00, 0x7F, 0x02, 0x0C, 0x02, 0x7F}, // M
+        {0x00, 0x7F, 0x04, 0x08, 0x10, 0x7F}, // N
+        {0x00, 0x3E, 0x41, 0x41, 0x41, 0x3E}, // O
+        {0x00, 0x7F, 0x09, 0x09, 0x09, 0x06}, // P
+        {0x00, 0x3E, 0x41, 0x51, 0x21, 0x5E}, // Q
+        {0x00, 0x7F, 0x09, 0x19, 0x29, 0x46}, // R
+        {0x00, 0x46, 0x49, 0x49, 0x49, 0x31}, // S
+        {0x00, 0x01, 0x01, 0x7F, 0x01, 0x01}, // T
+        {0x00, 0x3F, 0x40, 0x40, 0x40, 0x3F}, // U
+        {0x00, 0x1F, 0x20, 0x40, 0x20, 0x1F}, // V
+        {0x00, 0x3F, 0x40, 0x38, 0x40, 0x3F}, // W
+        {0x00, 0x63, 0x14, 0x08, 0x14, 0x63}, // X
+        {0x00, 0x07, 0x08, 0x70, 0x08, 0x07}, // Y
+        {0x00, 0x61, 0x51, 0x49, 0x45, 0x43}, // Z
+        {0x00, 0x00, 0x7F, 0x41, 0x41, 0x00}, // [
+        {0x00, 0x55, 0x2A, 0x55, 0x2A, 0x55}, // 55
+        {0x00, 0x00, 0x41, 0x41, 0x7F, 0x00}, // ]
+        {0x00, 0x04, 0x02, 0x01, 0x02, 0x04}, // ^
+        {0x00, 0x40, 0x40, 0x40, 0x40, 0x40}, // _
+        {0x00, 0x00, 0x01, 0x02, 0x04, 0x00}, // '
+        {0x00, 0x20, 0x54, 0x54, 0x54, 0x78}, // a
+        {0x00, 0x7F, 0x48, 0x44, 0x44, 0x38}, // b
+        {0x00, 0x38, 0x44, 0x44, 0x44, 0x20}, // c
+        {0x00, 0x38, 0x44, 0x44, 0x48, 0x7F}, // d
+        {0x00, 0x38, 0x54, 0x54, 0x54, 0x18}, // e
+        {0x00, 0x08, 0x7E, 0x09, 0x01, 0x02}, // f
+        {0x00, 0x18, 0xA4, 0xA4, 0xA4, 0x7C}, // g
+        {0x00, 0x7F, 0x08, 0x04, 0x04, 0x78}, // h
+        {0x00, 0x00, 0x44, 0x7D, 0x40, 0x00}, // i
+        {0x00, 0x40, 0x80, 0x84, 0x7D, 0x00}, // j
+        {0x00, 0x7F, 0x10, 0x28, 0x44, 0x00}, // k
+        {0x00, 0x00, 0x41, 0x7F, 0x40, 0x00}, // l
+        {0x00, 0x7C, 0x04, 0x18, 0x04, 0x78}, // m
+        {0x00, 0x7C, 0x08, 0x04, 0x04, 0x78}, // n
+        {0x00, 0x38, 0x44, 0x44, 0x44, 0x38}, // o
+        {0x00, 0xFC, 0x24, 0x24, 0x24, 0x18}, // p
+        {0x00, 0x18, 0x24, 0x24, 0x18, 0xFC}, // q
+        {0x00, 0x7C, 0x08, 0x04, 0x04, 0x08}, // r
+        {0x00, 0x48, 0x54, 0x54, 0x54, 0x20}, // s
+        {0x00, 0x04, 0x3F, 0x44, 0x40, 0x20}, // t
+        {0x00, 0x3C, 0x40, 0x40, 0x20, 0x7C}, // u
+        {0x00, 0x1C, 0x20, 0x40, 0x20, 0x1C}, // v
+        {0x00, 0x3C, 0x40, 0x30, 0x40, 0x3C}, // w
+        {0x00, 0x44, 0x28, 0x10, 0x28, 0x44}, // x
+        {0x00, 0x1C, 0xA0, 0xA0, 0xA0, 0x7C}, // y
+        {0x00, 0x44, 0x64, 0x54, 0x4C, 0x44}, // z
+        {0x14, 0x14, 0x14, 0x14, 0x14, 0x14}  // horiz lines
+};
+
+/********以下static函数均为内部使用，用户无需关心********/
+static void OLED_WR_Byte(uint8_t dat, uint8_t cmd);
+static void OLED_Set_Pos(uint8_t x, uint8_t y);
+static void OLED_To_Str(uint16_t hex, uint8_t *ch);
+static void delay(volatile uint16_t t);
+
+/* 推荐使用oled_printf 用法和C语言printf一致
+ * 详见 oled.h 头文件
+ * 除了 oled_printf, 这里也向用户暴露了一些常用的接口。但均能使用oled_printf代替  
+ * 示例： float a=1.2;
+ *        oled_printf(0,0,"%.3f",a)
+ */
+
+/* @brief: OLED 初始化函数，使用前必须调用。
+ */
+void OLED_Init(void)
+{
+    OLED_RST_Set();
+    delay(100);
+    OLED_RST_Clr(); //复位
+    delay(200);
+    OLED_RST_Set();
+    OLED_WR_Byte(0xAE, OLED_CMD); //--turn off oled panel
+    OLED_WR_Byte(0x00, OLED_CMD); //---set low column address
+    OLED_WR_Byte(0x10, OLED_CMD); //---set high column address
+    OLED_WR_Byte(0x40, OLED_CMD); //--set start line address  Set Mapping RAM Display Start Line (0x00~0x3F)
+    OLED_WR_Byte(0x81, OLED_CMD); //--set contrast control register
+    OLED_WR_Byte(0xff, OLED_CMD); // Set SEG Output Current Brightness
+    OLED_WR_Byte(0xA1, OLED_CMD); //--Set SEG/Column Mapping     0xa0左右反置 0xa1正常
+    OLED_WR_Byte(0xC8, OLED_CMD); //Set COM/Row Scan Direction   0xc0上下反置 0xc8正常
+    OLED_WR_Byte(0xA6, OLED_CMD); //--set normal display
+    OLED_WR_Byte(0xA8, OLED_CMD); //--set multiplex ratio(1 to 64)
+    OLED_WR_Byte(0x3f, OLED_CMD); //--1/64 duty
+    OLED_WR_Byte(0xD3, OLED_CMD); //-set display offset	Shift Mapping RAM Counter (0x00~0x3F)
+    OLED_WR_Byte(0x00, OLED_CMD); //-not offset
+    OLED_WR_Byte(0xd5, OLED_CMD); //--set display clock divide ratio/oscillator frequency
+    OLED_WR_Byte(0x80, OLED_CMD); //--set divide ratio, Set Clock as 100 Frames/Sec
+    OLED_WR_Byte(0xD9, OLED_CMD); //--set pre-charge period
+    OLED_WR_Byte(0xF1, OLED_CMD); //Set Pre-Charge as 15 Clocks & Discharge as 1 Clock
+    OLED_WR_Byte(0xDA, OLED_CMD); //--set com pins hardware configuration
+    OLED_WR_Byte(0x12, OLED_CMD);
+    OLED_WR_Byte(0xDB, OLED_CMD); //--set vcomh
+    OLED_WR_Byte(0x40, OLED_CMD); //Set VCOM Deselect Level
+    OLED_WR_Byte(0x20, OLED_CMD); //-Set Page Addressing Mode (0x00/0x01/0x02)
+    OLED_WR_Byte(0x02, OLED_CMD); //
+    OLED_WR_Byte(0x8D, OLED_CMD); //--set Charge Pump enable/disable
+    OLED_WR_Byte(0x14, OLED_CMD); //--set(0x10) disable
+    OLED_WR_Byte(0xA4, OLED_CMD); // Disable Entire Display On (0xa4/0xa5)
+    OLED_WR_Byte(0xA6, OLED_CMD); // Disable Inverse Display On (0xa6/a7)
+    OLED_Clear();
+    OLED_WR_Byte(0xAF, OLED_CMD); /*display ON*/
+}
+/* @brief: OLED 打开电源
+ */
+void OLED_DisPlay_On(void)
+{
+    OLED_WR_Byte(0x8D, OLED_CMD); //电荷泵使能
+    OLED_WR_Byte(0x14, OLED_CMD); //开启电荷泵
+    OLED_WR_Byte(0xAF, OLED_CMD); //点亮屏幕
+}
+/* @brief: OLED 关闭电源
+ */
+void OLED_DisPlay_Off(void)
+{
+    OLED_WR_Byte(0x8D, OLED_CMD); //电荷泵使能
+    OLED_WR_Byte(0x10, OLED_CMD); //关闭电荷泵
+    OLED_WR_Byte(0xAF, OLED_CMD); //关闭屏幕
+}
+/* @brief: OLED 清屏函数
+ */
+void OLED_Clear(void)
+{
+    uint8_t i, n;
+    for (i = 0; i < 8; i++)
+    {
+        OLED_WR_Byte(0xb0 + i, OLED_CMD);
+        OLED_WR_Byte(0x00, OLED_CMD);
+        OLED_WR_Byte(0x10, OLED_CMD);
+        for (n = 0; n < 128; n++)
+            OLED_WR_Byte(0, OLED_DATA);
+    }
+}
+/* @brief: OLED 填充函数
+ * @param dat: 取值 0x00 或者 0x01
+ * @example: OLED_Fill(0x00); // 全部填充为0
+ *           OLED_Fill(0x01); // 全部填充为1
+ */
+void OLED_Fill(uint8_t dat)
+{
+    uint8_t i, j;
+    for (i = 0; i < 8; i++)
+    {
+        OLED_WR_Byte(0xb0 + i, OLED_CMD);
+        OLED_WR_Byte(0x01, OLED_CMD);
+        OLED_WR_Byte(0x10, OLED_CMD);
+        for (j = 0; j < X_WIDTH; j++)
+            OLED_WR_Byte(dat, OLED_DATA);
+    }
+}
+/* @brief: OLED 打印字符串
+ * @param x: 坐标的 x 轴 取值 0-127
+ * @param y: 坐标的 y 轴 取值 0-7
+ * @param str: 待打印的字符串
+ * @example: OLED_Put_Str(0,0,"Hello World");
+ */
+void OLED_Put_Str(uint8_t x, uint8_t y, int8_t str[])
+{
+    uint8_t i = 0, j = 0, k = 0;
+    while (str[j] != '\0')
+    {
+        k = str[j] - 32;
+        if (x > 126)
+        {
+            x = 0;
+            y++;
+        }
+        OLED_Set_Pos(x, y);
+        for (i = 0; i < 6; i++)
+            OLED_WR_Byte(F6x8[k][i], OLED_DATA);
+        x += 6;
+        j++;
+    }
+}
+/* @brief: OLED 打印数字
+ * @param x: 坐标的 x 轴 取值 0-127
+ * @param y: 坐标的 y 轴 取值 0-7
+ * @param num: 待打印的数字，打印6位，前面补零
+ * @example: OLED_Put_Num(0,0,100);
+ */
+void OLED_Put_Num(uint8_t x, uint8_t y, int16_t num)
+{
+    uint8_t *str, ch[7];
+    if (num < 0)
+    {
+        num = -num;
+        OLED_Put_Str(x, y, (int8_t *)"-");
+    }
+    else
+        OLED_Put_Str(x, y, (int8_t *)" ");
+    x += 6;
+    OLED_To_Str(num, ch);
+    str = &ch[1];
+    while (*str != '\0')
+    {
+        OLED_Put_Str(x, y, (int8_t *)str);
+        x += 6;
+        str++;
+    }
+}
+/* @brief: OLED 打印以数组保存的图片
+ * @param height: 图像的高度
+ * @param width: 图像的宽度
+ * @param pic: 图像数组的起始地址
+ * @param threshold: 图像的阈值 大于阈值显示1 小于阈值显示0
+ */
+void OLED_Put_Pic(uint16_t height, uint16_t width, uint8_t *pic, uint8_t threshold)
+{
+    int16_t i, j;
+    int16_t temp, temp1;
+    uint8_t dat;
+    temp1 = height % 8;
+    if (temp1 == 0)
+        temp = height / 8;
+    else
+        temp = height / 8 + 1;
+    for (i = 0; i < temp; i++)
+    {
+        OLED_Set_Pos(0, i);
+        for (j = 0; j < width; j++)
+        {
+            dat = 0;
+            if (i < (temp - 1) || !temp1 || temp1 >= 1)
+                dat |= (*(pic + i * 8 * width + j + width * 0) > threshold ? 1 : 0) << 0;
+            if (i < (temp - 1) || !temp1 || temp1 >= 2)
+                dat |= (*(pic + i * 8 * width + j + width * 1) > threshold ? 1 : 0) << 1;
+            if (i < (temp - 1) || !temp1 || temp1 >= 3)
+                dat |= (*(pic + i * 8 * width + j + width * 2) > threshold ? 1 : 0) << 2;
+            if (i < (temp - 1) || !temp1 || temp1 >= 4)
+                dat |= (*(pic + i * 8 * width + j + width * 3) > threshold ? 1 : 0) << 3;
+            if (i < (temp - 1) || !temp1 || temp1 >= 5)
+                dat |= (*(pic + i * 8 * width + j + width * 4) > threshold ? 1 : 0) << 4;
+            if (i < (temp - 1) || !temp1 || temp1 >= 6)
+                dat |= (*(pic + i * 8 * width + j + width * 5) > threshold ? 1 : 0) << 5;
+            if (i < (temp - 1) || !temp1 || temp1 >= 7)
+                dat |= (*(pic + i * 8 * width + j + width * 6) > threshold ? 1 : 0) << 6;
+            if (i < (temp - 1) || !temp1 || temp1 >= 8)
+                dat |= (*(pic + i * 8 * width + j + width * 7) > threshold ? 1 : 0) << 7;
+            OLED_WR_Byte(dat, OLED_DATA);
+        }
+    }
+}
+/* @brief: 设定位置。 内部调用
+ */
+static void OLED_Set_Pos(uint8_t x, uint8_t y)
+{
+    OLED_WR_Byte(0xb0 + y, OLED_CMD);
+    OLED_WR_Byte(((x & 0xf0) >> 4) | 0x10, OLED_CMD);
+    OLED_WR_Byte((x & 0x0f) | 0x01, OLED_CMD);
+}
+/* @brief: 写入数据或命令。 内部调用
+ */
+static void OLED_WR_Byte(uint8_t dat, uint8_t cmd)
+{
+    uint8_t i;
+    if (cmd)
+        OLED_DC_Set();
+    else
+        OLED_DC_Clr();
+    OLED_CS_Clr();
+    for (i = 0; i < 8; i++)
+    {
+        OLED_SCLK_Clr();
+        if (dat & 0x80)
+            OLED_SDIN_Set();
+        else
+            OLED_SDIN_Clr();
+        OLED_SCLK_Set();
+        dat <<= 1;
+    }
+    OLED_CS_Set();
+    OLED_DC_Set();
+}
+/* @brief:  数字转字符串。 内部调用
+ */
+static void OLED_To_Str(uint16_t hex, uint8_t *ch)
+{
+    uint8_t number_bit;
+    uint8_t i;
+    i = 6;
+    ch[i] = '\0';
+    while (i)
+    {
+        i--;
+        number_bit = hex % 10;
+        hex /= 10;
+        ch[i] = number_bit + 0x30;
+    }
+}
+/* @brief: 延时。 内部调用
+ */
+static void delay(volatile uint16_t t)
+{
+    while (t--)
+        ;
+}
